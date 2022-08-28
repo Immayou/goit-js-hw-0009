@@ -9,7 +9,8 @@ const spanHours = document.querySelector('span[data-hours]')
 const spanMinutes = document.querySelector('span[data-minutes]')
 const spanSeconds = document.querySelector('span[data-seconds]')
 
-startBTN.setAttribute('disabled', 'true')
+startBTN.disabled = true
+inputDataField.disabled = false
 
 let timerId = null;
 let deltaTime = null;
@@ -21,10 +22,11 @@ const options = {
     minuteIncrement: 1,
     onClose(selectedDates) {
         if(selectedDates[0].getTime() > options.defaultDate.getTime()) {
-        startBTN.removeAttribute('disabled')
+        startBTN.disabled = false
     } else {
-        clearInterval(timerId);
+        startBTN.disabled = true
         Notiflix.Notify.failure("Please choose a date in the future")
+        return
        }
   }
 }
@@ -32,14 +34,22 @@ const options = {
 flatpickr('#datetime-picker', options)
 
 startBTN.addEventListener('click', () => {
+    
     timerId = setInterval(() => {
         deltaTime = new Date(inputDataField.value) - new Date()
+
+        if (deltaTime >= 0) {
+        startBTN.disabled = true
         const { days, hours, minutes, seconds } = convertMs(deltaTime)
-        startBTN.setAttribute('disabled', 'true')
         spanDays.textContent = addLeadingZero(days)
         spanHours.textContent = addLeadingZero(hours)
         spanMinutes.textContent = addLeadingZero(minutes)
         spanSeconds.textContent = addLeadingZero(seconds)
+        } else {
+        clearInterval(timerId)
+        startBTN.disabled = false
+        }
+        
     }, 1000)
 })
 
