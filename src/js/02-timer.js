@@ -34,11 +34,11 @@ const options = {
 flatpickr('#datetime-picker', options)
 
 startBTN.addEventListener('click', () => {
-    
     timerId = setInterval(() => {
         deltaTime = new Date(inputDataField.value) - new Date()
 
         if (deltaTime >= 0) {
+        inputDataField.disabled = true
         startBTN.disabled = true
         const { days, hours, minutes, seconds } = convertMs(deltaTime)
         spanDays.textContent = addLeadingZero(days)
@@ -48,6 +48,7 @@ startBTN.addEventListener('click', () => {
         } else {
         clearInterval(timerId)
         startBTN.disabled = false
+        inputDataField.disabled = false
         }
         
     }, 1000)
